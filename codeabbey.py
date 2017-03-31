@@ -3,17 +3,23 @@ import urllib.request
 
 with urllib.request.urlopen('http://www.codeabbey.com/index/user_ranking') as response:
     html = response.read()
-# r'((\<tr class="centered none"\>).*?(\<\/tr\>))'
 
-# m = re.match(r'(?P<start>\<tr class="centered none"\>)(?P<inner>.*?)(?P<finish>\<\/tr\>)', html.decode("utf-8"), )
-# print (m)
-
-rows = []
+rows = ['    Num', '    Lang', '    Rank', '    Enli', '    Shit', '    Tasks', 'Errr']
 i = 0
-for tr in re.finditer(r'\<tr class="centered none"\>.*?(\<\/tr\>)', html.decode("utf-8"), flags=re.DOTALL):
+for tr in re.finditer(r'(\<tr class="centered none"\>)(.*?)(\<\/tr\>)', html.decode("utf-8"), flags=re.DOTALL):
     i += 1
-    # print (i)
-    r = tr.group(0)
-    rows.append(r)
-    print(rows)
-    #print (i, ' -> ',tr.group(0))
+    r = tr.group(2)
+    print('Row:', i)
+    td_it = 0
+    for td in re.finditer(r'(\<td\>)(.*?)(\<\/td\>)', r):
+
+        d = td.group(2)
+
+        print(td_it, rows[td_it], d)
+        td_it += 1
+        if td_it == 2:
+            for span in re.finditer(r'(\<span\>)(.*?)(\<\/span\>)', d):
+                print(span.group(2))
+                # rows.append(r)
+                # print(rows)
+                # print (i, ' -> ',tr.group(0))
